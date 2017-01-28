@@ -1,13 +1,10 @@
 <?php
-
 /**
  * Created by PhpStorm.
  * User: home
- * Date: 1/26/2017
- * Time: 22:33
+ * Date: 1/28/2017
+ * Time: 02:41
  */
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/config.php';
 
 use Library\Service;
 use Library\Request;
@@ -15,18 +12,8 @@ use Library\Response;
 use Library\Config;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-class ShyCart
-{
-    public static $app;
-}
-
 class Application
 {
-
     private static $app = null;
     private $service = null;
     private $base_dir = null;
@@ -49,6 +36,10 @@ class Application
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
         echo "error<br>";
+        echo "$errno<br>";
+        echo "$errstr<br>";
+        echo "$errfile<br>";
+        echo "$errline<br>";
     }
 
     public static function autoloader($class)
@@ -119,7 +110,7 @@ class Application
         $route = $request->get("route");
 
         if ($route == null) { //default home page
-            $file = __DIR__ . "/controller/common/home.php";
+            $file = $this->base_dir . "/controller/common/home.php";
             include_once($file);
             $folder = "common";
             $class = "home";
@@ -141,14 +132,14 @@ class Application
         }
 
         $className = "Controller\\{$folder}\\Controller{$folder}{$class}";
-        $file = __DIR__ . "/controller/{$folder}/{$class}.php";
+        $file = $this->base_dir . "/controller/{$folder}/{$class}.php";
 
         //confirm file exists
         if (file_exists($file)) {
             include_once($file);
         } else {
             $className = "Controller\\Common\\ControllerCommonError";
-            $file = __DIR__ . "/controller/common/error.php";
+            $file = $this->base_dir . "/controller/common/error.php";
             $method = "index";
             include_once($file);
         }
@@ -159,7 +150,7 @@ class Application
             call_user_func([$controller, $method]);
         } else {
             $className = "Controller\\Common\\ControllerCommonError";
-            $file = __DIR__ . "/controller/common/error.php";
+            $file = $this->base_dir . "/controller/common/error.php";
             $method = "index";
             include_once($file);
 
@@ -183,8 +174,3 @@ class Application
         return $this->templateEngine;
     }
 }
-
-
-$app = Application::getInstance();
-ShyCart::$app = $app;
-$app->run($config);

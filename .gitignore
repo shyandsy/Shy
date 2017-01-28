@@ -44,4 +44,4 @@ fabric.properties
 
 .idea/
 /vendor
-view-cache/
+frontend/view-cache/

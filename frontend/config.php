@@ -7,8 +7,9 @@
  */
 
 $config = [
-    "base_dir" => __DIR__,
-    "viewCacheDir" => __DIR__ . "/view-cache",
+    "base_dir" => __DIR__,                      //项目根目录
+    "viewCacheDir" => __DIR__ . "/view-cache",  //项目view-cache
+    "debug" => true,
     "db" => [
         "DB_DRIVER" => "mysql",
         "DB_HOST" => "192.168.216.133",

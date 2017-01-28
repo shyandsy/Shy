@@ -27,6 +27,5 @@ class Controller extends Object
         } else {
             throw new \Exception("invalid template engine!");
         }
-
     }
 }
