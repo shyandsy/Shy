@@ -7,6 +7,7 @@
  * Time: 00:22
  */
 namespace Controller\Common;
+
 use Base\Controller;
 
 class ControllerCommonError extends Controller

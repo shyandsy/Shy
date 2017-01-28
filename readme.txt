@@ -12,3 +12,18 @@ functionality categories:
     model
     view
 -library
+
+------------------------------------------------------------
+
+V1.1
+-Application Config
+    -db
+    -debug status
+    -directory
+-Application
+    -debug status
+    -bootstrap
+-ShyCart
+    -app
+
+* the privilege of view-cache must be 777

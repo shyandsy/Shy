@@ -6,21 +6,32 @@
  * Date: 1/26/2017
  * Time: 22:33
  */
-
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/config.php';
 
 use Library\Service;
 use Library\Request;
 use Library\Response;
+use Library\Config;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+class ShyCart
+{
+    public static $app;
+}
 
 class Application
 {
 
     private static $app = null;
     private $service = null;
+    private $base_dir = null;
+    private $viewCacheDir = null;
+    private $templateEngine = null;
 
     private function __construct()
     {
@@ -59,23 +70,49 @@ class Application
         echo "Uncaught exception: ", $exception->getMessage(), "\n";
     }
 
-    public function run()
+    public function run($config)
     {
         //auto loader
         spl_autoload_register("Application::autoloader");
 
         //error handler
-        //set_error_handler("Application::errorHandler", E_ALL ^ E_NOTICE);
+        set_error_handler("Application::errorHandler", E_ALL ^ E_NOTICE);
 
         //exception handler
-        //set_exception_handler("Application::exception_handler");
+        set_exception_handler("Application::exception_handler");
+
+        //base dir
+        $this->base_dir = $config['base_dir'];
+        $this->viewCacheDir = $config['viewCacheDir'];
+        $this->templateEngine = $config['templateEngine'];
 
         //create service
         $this->service = new Service();
 
+        $db = new Capsule;
+        $db->addConnection([
+            'driver' => $config['db']['DB_DRIVER'],
+            'host' => $config['db']['DB_HOST'],
+            'database' => $config['db']['DB_DATABASE'],
+            'username' => $config['db']['DB_USERNAME'],
+            'password' => $config['db']['DB_PASSWORD'],
+            'charset' => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix' => '',
+        ]);
+
+        //twig
+        $loader = new Twig_Loader_Filesystem($this->base_dir . '/view/');
+        $twig = new Twig_Environment($loader, array(
+            'cache' => $this->base_dir . '/view-cache/',
+        ));
+
         //register component
         $this->service->register("request", new Request());
         $this->service->register("response", new Response());
+        $this->service->register("config", new Config());
+        $this->service->register("db", $db);
+        $this->service->register("twig", $twig);
 
         //execute controller
         $request = $this->service->resolve("request");
@@ -106,28 +143,48 @@ class Application
         $className = "Controller\\{$folder}\\Controller{$folder}{$class}";
         $file = __DIR__ . "/controller/{$folder}/{$class}.php";
 
-        try {
-            if (file_exists($file)) {
-                include_once($file);
-            } else {
-                $className = "Controller\\Common\\ControllerCommonError";
-                $file = __DIR__ . "/controller/common/error.php";
-                $method = "index";
-                include_once($file);
-            }
-        }catch(Exception $e){
-            ;//尼玛file_exists返回false还不行还要出个error，吃饱撑的！！
+        //confirm file exists
+        if (file_exists($file)) {
+            include_once($file);
+        } else {
+            $className = "Controller\\Common\\ControllerCommonError";
+            $file = __DIR__ . "/controller/common/error.php";
+            $method = "index";
+            include_once($file);
         }
 
-        if(is_callable([$className, $method])){
+        //make sure the method is available
+        if (is_callable([$className, $method])) {
             $controller = new $className($this->service);
             call_user_func([$controller, $method]);
-        }else{
-            throw new \Exception("not found the executable object");
+        } else {
+            $className = "Controller\\Common\\ControllerCommonError";
+            $file = __DIR__ . "/controller/common/error.php";
+            $method = "index";
+            include_once($file);
+
+            $controller = new $className($this->service);
+            call_user_func([$controller, $method]);
         }
+    }
+
+    public function getBaseDir()
+    {
+        return $this->base_dir;
+    }
+
+    public function getViewCacheDir()
+    {
+        return $this->viewCacheDir;
+    }
+
+    public function getTemplateEngine()
+    {
+        return $this->templateEngine;
     }
 }
 
 
-$webapp = Application::getInstance();
-$webapp->run();
+$app = Application::getInstance();
+ShyCart::$app = $app;
+$app->run($config);

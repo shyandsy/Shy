@@ -15,5 +15,7 @@ class ControllerCommonHome extends Controller
     public function index()
     {
         echo "home index<br>";
+        $data['title'] = "title";
+        $this->render("common/home.html", $data);
     }
 }

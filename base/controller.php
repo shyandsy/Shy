@@ -18,4 +18,15 @@ class Controller extends Object
     {
         $this->service = $service;
     }
+
+    public function render($templateName, array $parameters = array())
+    {
+        if (\ShyCart::$app->getTemplateEngine() === "twig") {
+            $twig = $this->service->resolve("twig");
+            echo $twig->render($templateName, $parameters);
+        } else {
+            throw new \Exception("invalid template engine!");
+        }
+
+    }
 }

@@ -14,7 +14,7 @@ class Service extends Object
 {
     private $components = [];
 
-    public function register(string $name, object $component)
+    public function register(string $name, $component)
     {
         $this->components[$name] = $component;
     }
