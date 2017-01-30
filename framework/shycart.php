@@ -1,6 +1,8 @@
-<?
+<?php
 require __DIR__ . "/application.php";
-class ShyCart{
+
+class ShyCart
+{
     public static $app;
 }
 ?>

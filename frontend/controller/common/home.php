@@ -9,21 +9,21 @@
 namespace Controller\Common;
 
 use Base\Controller;
-
+use \ShyCart;
 class ControllerCommonHome extends Controller
 {
     public function index()
     {
         $data['title'] = "title";
-        $this->log->error("error");
+        ShyCart::$app->log->error("error");
 
         //test session
-        if($this->session->xx === null)
-            $this->session->xx = "aaaa";
+        if(ShyCart::$app->session->xx === null)
+            ShyCart::$app->session->xx = "aaaa";
         else
-            echo $this->session->xx;
+            echo ShyCart::$app->session->xx;
 
-        echo $this->config->get("site_url");
+        echo ShyCart::$app->config->get("site_url");
 
         $this->render("common/home.html", $data);
     }

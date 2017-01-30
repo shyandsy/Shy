@@ -12,5 +12,4 @@ require __DIR__ . '/config.php';
 
 
 $app = Application::getInstance();
-ShyCart::$app = $app;
 $app->run($config);

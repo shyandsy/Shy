@@ -172,6 +172,9 @@ class Application
         //session start
         $this->service->resolve("session")->start();
 
+        //set app into ShyCart
+        ShyCart::$app = $this;
+
         //execute controller
         $request = $this->service->resolve("request");
         $route = $request->get("route");
@@ -241,7 +244,7 @@ class Application
         return $this->templateEngine;
     }
 
-    public function get($key){
+    public function __get($key){
         assert($this->service != false);
         if($this->service){
             return $this->service->resolve($key);
