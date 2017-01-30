@@ -14,8 +14,17 @@ class ControllerCommonHome extends Controller
 {
     public function index()
     {
-        echo "home index<br>";
         $data['title'] = "title";
+        $this->log->error("error");
+
+        //test session
+        if($this->session->xx === null)
+            $this->session->xx = "aaaa";
+        else
+            echo $this->session->xx;
+
+        echo $this->config->get("site_url");
+
         $this->render("common/home.html", $data);
     }
 }

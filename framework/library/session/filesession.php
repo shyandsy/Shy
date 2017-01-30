@@ -9,41 +9,52 @@
 namespace Library\Session;
 
 
-class FileSession implements ISession
+class FileSession implements \SessionHandlerInterface
 {
+    private $save_path;
+
+    public function open($save_path, $session_name)
+    {
+        $this->save_path = $save_path;
+        if (!is_dir($this->save_path)) {
+            mkdir($this->save_path, 0777);
+        }
+        return true;
+    }
 
     public function close()
     {
-        // TODO: Implement close() method.
+        return true;
     }
 
-    public function create_sid()
+    public function read($session_id)
     {
-        // TODO: Implement create_sid() method.
+        return (string)@file_get_contents("$this->save_path/sess_$session_id");
     }
 
-    public function destroy(string $session_id)
+    public function write($session_id, $session_data)
     {
-        // TODO: Implement destroy() method.
+        return file_put_contents("$this->save_path/sess_$session_id", $session_data) === false ? false : true;
     }
 
-    public function gc(int $max_life_time)
+    public function destroy($session_id)
     {
-        // TODO: Implement gc() method.
+        $file = "$this->save_path/sess_$session_id";
+        if (file_exists($file)) {
+            unlink($file);
+        }
+
+        return true;
     }
 
-    public function open(string $save_path, string $session_name)
+    public function gc($max_life_time)
     {
-        // TODO: Implement open() method.
-    }
+        foreach (glob("$this->save_path/sess_*") as $file) {
+            if (filemtime($file) + $max_life_time < time() && file_exists($file)) {
+                unlink($file);
+            }
+        }
 
-    public function read(string $session_id)
-    {
-        // TODO: Implement read() method.
-    }
-
-    public function write(string $session_id, string $session_data)
-    {
-        // TODO: Implement write() method.
+        return true;
     }
 }

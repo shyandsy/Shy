@@ -8,11 +8,12 @@
 namespace Base;
 
 use Base\Object;
+use Exception\ShyCartException;
 use Library\Service;
 
 class Controller extends Object
 {
-    protected $service;
+    protected $service = null;
 
     public function __construct(Service $service)
     {
@@ -27,5 +28,8 @@ class Controller extends Object
         } else {
             throw new \Exception("invalid template engine!");
         }
+    }
+    public function __get($key){
+        return $this->service->resolve($key);
     }
 }

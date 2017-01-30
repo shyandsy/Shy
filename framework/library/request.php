@@ -5,9 +5,7 @@
  * Date: 1/26/2017
  * Time: 23:23
  */
-
 namespace Library;
-
 use Base\Object;
 
 class Request extends Object
