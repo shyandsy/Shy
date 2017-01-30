@@ -20,7 +20,8 @@ class FileLog implements ILog
     public function open($log_config)
     {
         $this->file = @fopen($log_config['path'], 'a');
-        if(!$this->file){
+        if(!$this->file)
+        {
             throw new InvalidConfigException();
         }
     }

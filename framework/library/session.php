@@ -20,12 +20,16 @@ class Session
 
     public static function getInstance($session_config)
     {
-        if(self::$session == null){
-            if($session_config['type'] === 'file'){
+        if(self::$session == null)
+        {
+            if($session_config['type'] === 'file')
+            {
                 self::$session = new Session($session_config);
                 session_set_save_handler(new FileSession(), true);
                 session_save_path($session_config['path']);
-            }else{
+            }
+            else
+            {
                 throw new InvalidConfigException();
             }
         }
@@ -46,7 +50,8 @@ class Session
         return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
     }
 
-    public function __set($key, $value){
+    public function __set($key, $value)
+    {
         $_SESSION[$key] = $value;
     }
 }

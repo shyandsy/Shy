@@ -36,10 +36,13 @@ class Log
     {
         if (self::$logger == null)
         {
-            if($config['type'] === 'file'){
+            if($config['type'] === 'file')
+            {
                 self::$logger = new FileLog();
                 self::$logger->open($config);
-            }else{
+            }
+            else
+            {
                 throw new InvalidConfigException();
             }
         }

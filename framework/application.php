@@ -29,7 +29,8 @@ class Application
 
     public static function getInstance()
     {
-        if (self::$app === null) {
+        if (self::$app === null)
+        {
             self::$app = new Application();
         }
         return self::$app;
@@ -38,7 +39,8 @@ class Application
 
     public static function errorHandler($errno, $errstr, $errfile, $errline)
     {
-        switch ($errno) {
+        switch ($errno)
+        {
             case E_USER_ERROR:
 
                 echo "<b>Error: </b> [$errno] $errstr<br />\n";
@@ -96,7 +98,8 @@ class Application
         ";
         $output = sprintf($template, $message, $code, $file, $line);
 
-        foreach($callstack as $item){
+        foreach($callstack as $item)
+        {
             $output .= "<tr style='border-bottom: 1px solid #ddd;padding:10px 30px;'>";
             $output .= "<td>" . $item['file'] . "</td>";
             $output .= "<td>" . $item['line'] . "</td>";
@@ -113,12 +116,14 @@ class Application
     public function run($config)
     {
         //version check
-        if (version_compare(PHP_VERSION, '7.0.0') < 0) {
+        if (version_compare(PHP_VERSION, '7.0.0') < 0)
+        {
             echo "The lowerest php version is 7, but your version is" . PHP_VERSION . "\n";
             exit();
         }
 
-        if(isset($config['debug']) && $config['debug']){
+        if(isset($config['debug']) && $config['debug'])
+        {
             ini_set('display_errors', 1);
             ini_set('display_startup_errors', 1);
             error_reporting(E_ALL);
@@ -169,15 +174,14 @@ class Application
         $this->service->register("session", Session::getInstance($config['session']));
         $this->service->register("config", Config::getInstance($this->service));
 
-        //session start
-        $this->service->resolve("session")->start();
-
         //set app into ShyCart
         ShyCart::$app = $this;
 
+        //session start
+        ShyCart::$app->session->start();
+
         //execute controller
-        $request = $this->service->resolve("request");
-        $route = $request->get("route");
+        $route = ShyCart::$app->request->get("route");
 
         if ($route == null) { //default home page
             $file = $this->base_dir . "/controller/common/home.php";
@@ -244,11 +248,15 @@ class Application
         return $this->templateEngine;
     }
 
-    public function __get($key){
+    public function __get($key)
+    {
         assert($this->service != false);
-        if($this->service){
+        if($this->service)
+        {
             return $this->service->resolve($key);
-        }else{
+        }
+        else
+        {
             throw new \Exception\ShyCartException("application run should be executed before get");
         }
     }

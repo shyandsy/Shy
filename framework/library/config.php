@@ -17,20 +17,26 @@ class Config extends Object
     private $data = [];
     private $db;
 
-    private function __construct($service){
+    private function __construct($service)
+    {
         $this->db = $service->resolve("db");
         $settings = Capsule::table('setting')->get();
-        foreach($settings as $setting){
+        foreach($settings as $setting)
+        {
             if($setting->serialized){
                 $this->data[$setting->key] = unserialize($setting->value);
-            }else{
+            }
+            else
+            {
                 $this->data[$setting->key] = $setting->value;
             }
         }
     }
 
-    public static function getInstance($service){
-        if(self::$config === null){
+    public static function getInstance($service)
+    {
+        if(self::$config === null)
+        {
             self::$config = new Config($service);
         }
         return self::$config;

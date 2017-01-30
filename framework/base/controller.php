@@ -15,9 +15,12 @@ class Controller extends Object
 {
     public function render($templateName, array $parameters = array())
     {
-        if (\ShyCart::$app->getTemplateEngine() === "twig") {
+        if (\ShyCart::$app->getTemplateEngine() === "twig")
+        {
             echo ShyCart::$app->twig->render($templateName, $parameters);
-        } else {
+        }
+        else
+        {
             throw new ShyCartException("invalid template engine!");
         }
     }
