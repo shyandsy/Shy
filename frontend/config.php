@@ -35,6 +35,6 @@ $config = [
     ],
     "session" => [
         "type" => "file",
-        "path" => __DIR__ . "/session_folder"
+        "path" => dirname(__DIR__) . "/tmp/session_folder"
     ]
 ];
