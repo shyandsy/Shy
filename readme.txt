@@ -1,3 +1,5 @@
+Shy is a very basic MVC framework for study purpose.
+
 V1.2
 1.Support PSR-4 autoload mechanism
 2.Session, base on the PHP interface SessionHandlerInterface
